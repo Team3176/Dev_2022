@@ -8,14 +8,40 @@ import edu.wpi.first.util.function.FloatConsumer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Falcon extends SubsystemBase {
   private static Falcon instance = new Falcon();
-  TalonSRX mytalon = new TalonSRX(1);
-
+  TalonFX mytalon = new TalonFX(1);
+  double kP = 0.01;
+  double kI = 0;
+  double kD = 0;
   /** Creates a new ExampleSubsystem. */
-  public Falcon() {}
+  public Falcon() {
+  
+mytalon.configFactoryDefault();
+
+mytalon.configNeutralDeadband(0.001);
+
+mytalon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
+
+mytalon.configNominalOutputForward(0, 30);
+mytalon.configNominalOutputReverse(0, 30);
+mytalon.configPeakOutputForward(1, 30);
+mytalon.configPeakOutputReverse(-1, 30);
+
+mytalon.config_kP(0, kP,30);
+mytalon.config_kI(0, kI,30);
+mytalon.config_kD(0, kD,30);
+  }
+  public void velocityControl(double speed){
+
+  mytalon.set(TalonFXControlMode.Velocity, speed);
+    System.out.println("FalconInit");
+  }
+
 
   @Override
   public void periodic() {
@@ -29,10 +55,12 @@ public class Falcon extends SubsystemBase {
   
   public void runAt80Percent() {
     mytalon.set(ControlMode.PercentOutput, 80);
+    System.out.println("Falcon80");
   }
   
   public void runAt0Percent() {
     mytalon.set(ControlMode.PercentOutput, 0);
+    System.out.println("Falcon0");
   }
  
 

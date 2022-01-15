@@ -22,7 +22,7 @@ public class Controller {
 
     private final Trigger motorGoButton;
     private final Trigger motorStopButton;
-
+    private final Trigger motorVelocity;
   
 
     public Controller() {
@@ -33,10 +33,11 @@ public class Controller {
 
         motorGoButton = new JoystickButton(op, Button.kA.value);
         motorStopButton = new JoystickButton(op, Button.kB.value);
-      
+        motorVelocity = new JoystickButton(op, Button.kX.value);
     }
 
 
     public Trigger getGoButton() {return motorGoButton;}
     public Trigger getStopButton() {return motorStopButton;}
+    public Trigger getVelocityButton() {return motorVelocity;}
 }

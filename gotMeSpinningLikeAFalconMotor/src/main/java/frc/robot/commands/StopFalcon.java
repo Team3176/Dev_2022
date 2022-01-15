@@ -18,7 +18,7 @@ public class StopFalcon extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public StopFalcon() {
-    m_Falcon = new Falcon();
+    m_Falcon = Falcon.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Falcon);
   }

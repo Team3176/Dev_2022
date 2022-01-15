@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.RunFalcon;
 import frc.robot.commands.StopFalcon;
+import frc.robot.commands.Velocity;
 import frc.robot.subsystems.Falcon;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -48,6 +49,7 @@ public class RobotContainer {
     m_Controller.getGoButton().whenActive(new RunFalcon());
     //m_Controller.getGoButton().whenPressed(new RunFalcon());
     m_Controller.getStopButton().whenActive(new StopFalcon());
+    m_Controller.getVelocityButton().whenActive(new Velocity());
     //m_Controller.getAButton();
     //if(getAButton()){
 

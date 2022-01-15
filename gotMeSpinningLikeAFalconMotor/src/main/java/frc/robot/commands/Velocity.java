@@ -4,23 +4,15 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Falcon;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Falcon;
 
-/** An example command that uses an example subsystem. */
-public class RunFalcon extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Falcon m_Falcon;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public RunFalcon() {
-    m_Falcon = Falcon.getInstance();
+public class Velocity extends CommandBase {
+ public Falcon m_Falcon;
+  /** Creates a new Velocity. */
+  public Velocity() {
+   m_Falcon = Falcon.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_Falcon);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +22,9 @@ public class RunFalcon extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Falcon.runAt80Percent();
+
+  m_Falcon.velocityControl(2000);  
+
   }
 
   // Called once the command ends or is interrupted.
