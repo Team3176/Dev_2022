@@ -15,9 +15,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 public class Falcon extends SubsystemBase {
   private static Falcon instance = new Falcon();
   TalonFX mytalon = new TalonFX(1);
-  double kP = 0.01;
-  double kI = 0;
-  double kD = 0;
+  double kP = 0.1;
+  double kI = 0.001;
+  double kD = 5;
   /** Creates a new ExampleSubsystem. */
   public Falcon() {
   
