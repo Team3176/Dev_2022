@@ -47,11 +47,9 @@ public class Robot extends TimedRobot {
     double leftYValue = m_driverController.getLeftY();
     double rightYValue = m_driverController.getRightY();
 
-    System.out.println(leftYValue + ", " + rightYValue);
-
     if (Math.abs(leftYValue) < 0.05) { leftYValue = 0.0;}
     if (Math.abs(rightYValue) < 0.05) { rightYValue = 0.0;}
 
-    m_robotDrive.tankDrive(-leftYValue, -rightYValue);
+    m_robotDrive.tankDrive(-leftYValue * Constants.SPEED_SCALE, -rightYValue * Constants.SPEED_SCALE);
   }
 }

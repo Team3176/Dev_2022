@@ -13,4 +13,6 @@ public class Constants {
 
     public static final int XBOX_CONTROLLER_PORT = 0;
 
+    public static final double SPEED_SCALE = 0.5;
+
 }
