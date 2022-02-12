@@ -12,12 +12,10 @@ public class Constants {
     public static final int VICTOR_RIGHT_BACK_PWM_CH = 3;
 
     public static final int XBOX_CONTROLLER_PORT = 0;
-    public static final int JOYSTICK_LEFT_PORT = 1;
-    public static final int JOYSTICK_RIGHT_PORT = 2;
+    public static final int JOYSTICK_LEFT_PORT = 0;
+    public static final int JOYSTICK_RIGHT_PORT = 1;
 
     // Check each equation's valid and recommended values list
-    public static final double kScalingConstant = 2.0;
-
+    public static final double kScalingConstant = 1.0;
     public static final double kDeadbandValue = 0.05;
-
 }

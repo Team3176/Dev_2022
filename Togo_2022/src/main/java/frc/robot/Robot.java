@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
   // for easy switching between scaling constants in Shuffleboard
-  private final double[] scalingConstants = {0.25, 0.5, 1.0, 2.0, 3.0};
-  private int scalingConstantIndex = 0;
+  private final double[] scalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
+  private int scalingConstantIndex = 4;
   
   private final VictorSP leftFrontMotor = new VictorSP(Constants.VICTOR_LEFT_FRONT_PWM_CH);
   private final VictorSP leftBackMotor = new VictorSP(Constants.VICTOR_LEFT_BACK_PWM_CH);
@@ -32,31 +32,65 @@ public class Robot extends TimedRobot {
 
   private final DifferentialDrive m_robotDrive = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
-  // with Xbox controller
   private final XboxController m_driverController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
-  /*
-  // with joysticks
   private final Joystick leftJoystick = new Joystick(Constants.JOYSTICK_LEFT_PORT);
   private final Joystick rightJoystick = new Joystick(Constants.JOYSTICK_RIGHT_PORT);
-  */
+
+  private double leftYValue;
+  private double rightYValue;
+
+  private boolean wasButtonPressed = false;
 
   /**
    * Increments up and down the scalingConstants list when testing several constants quickly with
    * Shuffleboard using the A (increment down) and Y (increment up) buttons on an Xbox controller
    * @author Jared Brown
    */
-  public void switchScalingConstant()
+  public void switchScalingConstantXbox()
   {
-    // with Xbox controller
-    if (m_driverController.getYButton() && scalingConstantIndex < scalingConstants.length - 1)
+    if (wasButtonPressed) 
     {
+      if (!m_driverController.getAButton() && !m_driverController.getYButton()) 
+      {
+        wasButtonPressed = false;
+      }
+    } else if (m_driverController.getYButton() && scalingConstantIndex < scalingConstants.length - 1) {
+
       scalingConstantIndex++;
+      wasButtonPressed = true;
     } else if (m_driverController.getAButton() && scalingConstantIndex > 0)
     {
       scalingConstantIndex--;
+      wasButtonPressed = true;
     }
   }
 
+  public void switchScalingConstantJoystick()
+  {
+    if (wasButtonPressed) 
+    {
+      if (!leftJoystick.getTrigger() && !rightJoystick.getTrigger()) 
+      {
+        wasButtonPressed = false;
+      }
+    } else if (rightJoystick.getTrigger() && scalingConstantIndex < scalingConstants.length - 1) {
+
+      scalingConstantIndex++;
+      wasButtonPressed = true;
+    } else if (leftJoystick.getTrigger() && scalingConstantIndex > 0)
+    {
+      scalingConstantIndex--;
+      wasButtonPressed = true;
+    }
+  }
+
+
+  /**
+   * Scales the input from the controller/joystick based on the equation being used and the scaling constant selected
+   * @author Jared Brown
+   * @param input
+   * @return output
+   */
   public double scaleInput(double input)
   {
     // "a" is the scaling constant
@@ -72,16 +106,20 @@ public class Robot extends TimedRobot {
     // Recommended: 0.25 <= a <= 5 ... Valid: a > 0
     if (input >= 0) {
       // double output = Math.pow(input, 1 / Constants.kScalingConstant);
+
       // for Shuffleboard testing
       double output = Math.pow(input, 1 / this.scalingConstants[scalingConstantIndex]);
+
       return output;
     }
+
     // if negative
     // double output = -Math.pow(input * -1, 1 / Constants.kScalingConstant);
+
     // for Shuffleboard testing
     double output = -Math.pow(input * -1, 1 / this.scalingConstants[scalingConstantIndex]);
-    return output;
 
+    return output;
   }
 
 
@@ -91,6 +129,9 @@ public class Robot extends TimedRobot {
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     leftMotorGroup.setInverted(true);
+
+    this.leftYValue = 0.0;
+    this.rightYValue = 0.0;
   }
 
   @Override
@@ -99,35 +140,43 @@ public class Robot extends TimedRobot {
     // That means that the Y axis of the left stick moves the left side
     // of the robot forward and backward, and the Y axis of the right stick
     // moves the right side of the robot forward and backward.
-
-    switchScalingConstant();
-
-    // with Xbox controller
-    double leftYValue = m_driverController.getLeftY();
-    double rightYValue = m_driverController.getRightY();
-    /*
-    // with joysticks
-    double leftYValue = leftJoystick.getY();
-    double rightYValue = rightJoystick.getY();
+    
+    /* * * * *
+    Two modes: joystick control and Xbox controller control. Comment out whichever block is not being used.
     */
 
 
+    // Joysticks
+    this.leftYValue = leftJoystick.getY();
+    this.rightYValue = rightJoystick.getY();
+    switchScalingConstantJoystick();
+    
+    /*
+    // Xbox controller
+    this.leftYValue = m_driverController.getLeftY();
+    this.rightYValue = m_driverController.getRightY();
+    switchScalingConstantXbox();
+    */
+
     if (Math.abs(leftYValue) < Constants.kDeadbandValue) { leftYValue = 0.0;}
     if (Math.abs(rightYValue) < Constants.kDeadbandValue) { rightYValue = 0.0;}
-
+ 
     m_robotDrive.tankDrive(-scaleInput(leftYValue), -scaleInput(rightYValue));
 
-    SmartDashboard.putNumber("leftInput", -leftYValue);
-    SmartDashboard.putNumber("leftOutput", -scaleInput(leftYValue));
-    SmartDashboard.putNumber("rightInput", -rightYValue);
-    SmartDashboard.putNumber("rightOutput", -scaleInput(rightYValue));
+    SmartDashboard.putNumber("leftInput%", -100 * leftYValue);
+    SmartDashboard.putNumber("leftOutput%", -100 * scaleInput(leftYValue));
+    SmartDashboard.putNumber("rightInput%", -100 * rightYValue);
+    SmartDashboard.putNumber("rightOutput%", -100 * scaleInput(rightYValue));
 
     SmartDashboard.putNumber("scalingConstant", scalingConstants[scalingConstantIndex]);
   }
 }
 
 /*
-Of the scaling constants I tested {0.25, 0.5, 1.0, 2.0, 3.0}...
-  - The Logitech controller did best with constants 0.5 and 1.0
-  - The Xbox controller did beest with constants 1.0 and 2.0
+Scaling constant testing on the cart: {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0}
+  - Xbox controller X2 was best at 2.0 and 3.0 and deadband 0.05
+  - Xbox controller X1 was best at 0.75 and 1.0 and deadband 0.05
+  - Xbox controller X3 was best at 0.75 and deadband 0.05
+  - Joysticks J-R2 and J-R3 set were best at 0.75, 1.0, and 1.5 and deadband 0.20
+  - Joysticks J-N1 and J-N2 were best at 1.0 and deadband 0.10
 */
