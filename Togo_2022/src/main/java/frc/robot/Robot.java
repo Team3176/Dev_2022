@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
   // for easy switching between scaling constants in Shuffleboard
-  private final double[] scalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
+  public final double[] scalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
   private int scalingConstantIndex = 4;
   
   private final VictorSP leftFrontMotor = new VictorSP(Constants.VICTOR_LEFT_FRONT_PWM_CH);
@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
 
   private double leftYValue;
   private double rightYValue;
+  private double rightXValue;
 
   private boolean wasButtonPressed = false;
 
@@ -132,6 +133,7 @@ public class Robot extends TimedRobot {
 
     this.leftYValue = 0.0;
     this.rightYValue = 0.0;
+    this.rightXValue = 0.0;
   }
 
   @Override
@@ -149,12 +151,14 @@ public class Robot extends TimedRobot {
     // Joysticks
     this.leftYValue = leftJoystick.getY();
     this.rightYValue = rightJoystick.getY();
+    this.rightXValue = rightJoystick.getX();
     switchScalingConstantJoystick();
     
     /*
     // Xbox controller
     this.leftYValue = m_driverController.getLeftY();
     this.rightYValue = m_driverController.getRightY();
+    this.rightXValue = m_driverController.getRightX();
     switchScalingConstantXbox();
     */
 
@@ -162,6 +166,10 @@ public class Robot extends TimedRobot {
     if (Math.abs(rightYValue) < Constants.kDeadbandValue) { rightYValue = 0.0;}
  
     m_robotDrive.tankDrive(-scaleInput(leftYValue), -scaleInput(rightYValue));
+
+    /* * * Arcade drive!
+    m_robotDrive.arcadeDrive(-scaleInput(leftYValue), -scaleInput(rightXValue));
+    */
 
     SmartDashboard.putNumber("leftInput%", -100 * leftYValue);
     SmartDashboard.putNumber("leftOutput%", -100 * scaleInput(leftYValue));
