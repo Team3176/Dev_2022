@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** Add your docs here. */
 public class Controller {
 
+    private static Controller m_Controller = new Controller();
     private final XboxController m_driverController;
     private final Joystick leftJoystick;
     private final Joystick rightJoystick;
@@ -20,7 +21,6 @@ public class Controller {
   
     // for easy switching between scaling constants in Shuffleboard
     private boolean wasButtonPressed;
-    private final double[] scalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
     private int scalingConstantIndex;
 
     public Controller()
@@ -37,5 +37,65 @@ public class Controller {
         wasButtonPressed = false;
         scalingConstantIndex = 4;
     }
+
+
+    public double getLeftStickY() { return leftJoystick.getY(); }
+    public double getRightStickY() { return rightJoystick.getY(); }
+    public double getRightStickX() { return rightJoystick.getX(); }
+
+    public double getXboxLeftY() { return m_driverController.getLeftY(); }
+    public double getXboxRightY() { return m_driverController.getRightY(); }
+    public double getXboxRightX() { return m_driverController.getRightX(); }
+
+    public double getScalingConstant() { return Constants.kScalingConstants[scalingConstantIndex]; }
+
+
+    /**
+   * Increments up and down the scalingConstants list when testing several constants quickly with
+   * Shuffleboard using the A (increment down) and Y (increment up) buttons on an Xbox controller
+   * @author Jared Brown
+   */
+  public void switchScalingConstantXbox()
+  {
+    if (wasButtonPressed) 
+    {
+      if (!m_driverController.getAButton() && !m_driverController.getYButton()) 
+      {
+        wasButtonPressed = false;
+      }
+    } else if (m_driverController.getYButton() && scalingConstantIndex < Constants.kScalingConstants.length - 1) {
+
+      scalingConstantIndex++;
+      wasButtonPressed = true;
+    } else if (m_driverController.getAButton() && scalingConstantIndex > 0)
+    {
+      scalingConstantIndex--;
+      wasButtonPressed = true;
+    }
+  }
+
+  public void switchScalingConstantJoystick()
+  {
+    if (wasButtonPressed) 
+    {
+      if (!leftJoystick.getTrigger() && !rightJoystick.getTrigger()) 
+      {
+        wasButtonPressed = false;
+      }
+    } else if (rightJoystick.getTrigger() && scalingConstantIndex < Constants.kScalingConstants.length - 1) {
+
+      scalingConstantIndex++;
+      wasButtonPressed = true;
+    } else if (leftJoystick.getTrigger() && scalingConstantIndex > 0)
+    {
+      scalingConstantIndex--;
+      wasButtonPressed = true;
+    }
+  }
+
+
+  public int getScalingConstantIndex() { return scalingConstantIndex; }
+
+  public static Controller getInstance() { return m_Controller; }
 
 }

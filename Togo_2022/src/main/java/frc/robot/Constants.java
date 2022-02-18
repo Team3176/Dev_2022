@@ -18,4 +18,15 @@ public class Constants {
     // Check each equation's valid and recommended values list
     public static final double kScalingConstant = 1.0;
     public static final double kDeadbandValue = 0.05;
+
+    public static final double[] kScalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
 }
+
+/*
+Scaling constant testing on the cart: {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0}
+  - Xbox controller X2 was best at 2.0 and 3.0 and deadband 0.05
+  - Xbox controller X1 was best at 0.75 and 1.0 and deadband 0.05
+  - Xbox controller X3 was best at 0.75 and deadband 0.05
+  - Joysticks J-R2 and J-R3 set were best at 0.75, 1.0, and 1.5 and deadband 0.20
+  - Joysticks J-N1 and J-N2 were best at 1.0 and deadband 0.10
+*/
