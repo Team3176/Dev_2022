@@ -23,6 +23,9 @@ public class Controller {
     private boolean wasButtonPressed;
     private int scalingConstantIndex;
 
+    // Type of controller. 0 = two joysticks, 1 = Xbox controller
+    private int controllerType;
+
     public Controller()
     {
         m_driverController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
@@ -35,9 +38,20 @@ public class Controller {
       
         // for easy switching between scaling constants in Shuffleboard
         wasButtonPressed = false;
-        scalingConstantIndex = 4;
+        scalingConstantIndex = Constants.kScalingConstantIndex;
+
+        // Type of controller. 0 = two joysticks, 1 = Xbox controller
+        this.controllerType = 0;
+        SmartDashboard.putNumber(Constants.kControllerTypeNameSB, this.controllerType);
     }
 
+    /**
+     * Checks the type of control as requested in Shuffleboard. 0 = tank drive and 1 = arcade drive.
+     * @author Jared Brown
+     */
+    public void controllerTypeCheck() {
+      this.controllerType = (int) SmartDashboard.getNumber(Constants.kControllerTypeNameSB, 0);
+    }
 
     public double getLeftStickY() { return leftJoystick.getY(); }
     public double getRightStickY() { return rightJoystick.getY(); }
@@ -47,8 +61,10 @@ public class Controller {
     public double getXboxRightY() { return m_driverController.getRightY(); }
     public double getXboxRightX() { return m_driverController.getRightX(); }
 
-    public double getScalingConstant() { return Constants.kScalingConstants[scalingConstantIndex]; }
+    public boolean getLeftStickTrigger() { return leftJoystick.getTrigger(); }
 
+    public double getScalingConstant() { return Constants.kScalingConstants[scalingConstantIndex]; }
+    public int getControllerType() { return this.controllerType; }
 
     /**
    * Increments up and down the scalingConstants list when testing several constants quickly with
