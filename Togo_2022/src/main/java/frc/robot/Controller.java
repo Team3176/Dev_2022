@@ -62,6 +62,7 @@ public class Controller {
     public double getXboxRightX() { return m_driverController.getRightX(); }
 
     public boolean getLeftStickTrigger() { return leftJoystick.getTrigger(); }
+    public boolean getXboxLeftBumper() { return m_driverController.getLeftBumper(); }
 
     public double getScalingConstant() { return Constants.kScalingConstants[scalingConstantIndex]; }
     public int getControllerType() { return this.controllerType; }

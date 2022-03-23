@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /** Add your docs here. */
 public class Drivetrain {
@@ -28,6 +29,8 @@ public class Drivetrain {
     private double previousPower;
     private int rampIterationsLeft;
     private int rampIterationsToUse;
+    private SlewRateLimiter rateLimiter1;
+    private SlewRateLimiter rateLimiter2;
 
     public Drivetrain()
     {
@@ -47,9 +50,8 @@ public class Drivetrain {
         this.driveMode = 0;
         SmartDashboard.putNumber(Constants.kDriveModeNameSB, this.driveMode);
 
-        this.previousPower = 0;
-        this.rampIterationsLeft = 0;
-        this.rampIterationsToUse = Constants.kRampIterationsToUse;
+        rateLimiter1 = new SlewRateLimiter(Constants.kPercentPerSecondRamp);
+        rateLimiter2 = new SlewRateLimiter(Constants.kPercentPerSecondRamp);
     }
 
     public void driveModeCheck() {
@@ -95,26 +97,11 @@ public class Drivetrain {
     return output;
   }
 
-  private double backwardArcadeSteerRamp(double newPower, double steerX)
-  {
-    if ((previousPower >= 0 && newPower < 0) || (previousPower < 0 && newPower >= 0)) {
-      this.rampIterationsLeft = Constants.kRampIterationsToUse;
-      System.out.println("Ramping started ############################################");
-    }
-    
-    if (this.rampIterationsLeft > 0) {
-      steerX = steerX + ((-(2 * steerX)) * ((rampIterationsToUse - rampIterationsLeft) / rampIterationsToUse));
-      System.out.println(steerX + " + [" + (-(2 * steerX)) + " * ( (" + rampIterationsToUse + " - " + rampIterationsLeft + " ) / " + rampIterationsToUse + " )]");
-      System.out.println("Ramps left: " + this.rampIterationsLeft + " -- steerX = " + steerX + " -- #################");
-      this.rampIterationsLeft--;
-    }
-    return steerX;
-  }
-
   private double scaleForTurbo(double power)
   {
     SmartDashboard.putBoolean("LeftTrigger", m_Controller.getLeftStickTrigger());
-    if (m_Controller.getLeftStickTrigger()) {
+    if ((m_Controller.getControllerType() == 0 && m_Controller.getLeftStickTrigger()) || 
+        (m_Controller.getControllerType() == 1) && m_Controller.getXboxLeftBumper()) {
       return power;
     }
     return power * Constants.kMaxPercentWithoutTurbo;
@@ -130,11 +117,14 @@ public class Drivetrain {
   {
     leftY = this.scaleForTurbo(leftY);
     rightY = this.scaleForTurbo(rightY);
+
     if (Math.abs(leftY) < Constants.kDeadbandValue) { leftY = 0.0;}
     if (Math.abs(rightY) < Constants.kDeadbandValue) { rightY = 0.0;}
+
     SmartDashboard.putNumber("leftStickScaled", scaleInput(leftY));
     SmartDashboard.putNumber("rightStickScaled", scaleInput(rightY));
-    robotDrive.tankDrive(scaleInput(leftY), scaleInput(rightY));
+
+    robotDrive.tankDrive(scaleInput(this.rateLimiter1.calculate(leftY)), scaleInput(this.rateLimiter2.calculate(rightY)));
   }
 
   /**
@@ -145,20 +135,16 @@ public class Drivetrain {
    */
   public void driveArcade(double powerY, double steerX)
   {
-    // steerX = this.backwardArcadeSteerRamp(powerY, steerX);
-    // this.previousPower = powerY;
-
     powerY = this.scaleForTurbo(powerY);
+
     if (Math.abs(powerY) < Constants.kDeadbandValue) { powerY = 0.0;}
     if (Math.abs(steerX) < Constants.kDeadbandValue) { steerX = 0.0;}
-    /* if (this.rampIterationsLeft == 0) { */
-      if (powerY < 0) { steerX *= -1; }
-    /* } */
+    if (powerY < 0) { steerX *= -1; }
+
     SmartDashboard.putNumber("leftStickScaled", scaleInput(powerY));
     SmartDashboard.putNumber("rightStickScaled", scaleInput(steerX));
-    if (Math.abs(steerX) <= 1) {
-      robotDrive.arcadeDrive(scaleInput(powerY), scaleInput(steerX));
-    }
+
+    robotDrive.arcadeDrive(scaleInput(this.rateLimiter1.calculate(powerY)), scaleInput(this.rateLimiter2.calculate(steerX)));
   }
 
   public static Drivetrain getInstance() { return m_Drivetrain; }

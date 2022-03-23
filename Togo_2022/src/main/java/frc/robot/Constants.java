@@ -16,16 +16,14 @@ public class Constants {
     public static final int JOYSTICK_RIGHT_PORT = 1;
 
     // Check each equation's valid and recommended values list
-    public static final double kScalingConstant = 1.0;
     public static final double kDeadbandValue = 0.05;
     public static final double[] kScalingConstants = {0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0};
     public static final int kScalingConstantIndex = 5;
     public static final double kMaxPercentWithoutTurbo = 0.75;
+    public static final double kPercentPerSecondRamp = 4.0;
 
     public static final String kDriveModeNameSB = "Drive Mode";
     public static final String kControllerTypeNameSB = "Controller Type";
-
-    public static final int kRampIterationsToUse = 50;
 }
 
 /*

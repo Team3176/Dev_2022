@@ -47,15 +47,25 @@ public class Robot extends TimedRobot {
     a scaling constant, 0 input always equals 0 output and full input always equals full output. The curve in between is what
     changes.)
 
+    To use turbo mode, hold the trigger on the left joystick when in joystick mode. With the Xbox controller, hold the left
+    bumper to use turbo mode.
+
     A useful Shuffleboard layout for monitoring a few inputs from Togo is saved in the Togo_2022 folder.
+
+    CONSTANTS TO KNOW/MODIFY from the Constants class:
+    - The kDeadBandValue sets the input deadband for the joysticks.
+    - The kScalingConstantIndex sets the scaling constant (see above for details)
+    - The kMaxPercentWithoutTurbo is multiplied by the input of the joystick is turbo is not enabled. Should be between 0 and 1.
+      The multiplication takes place BEFORE the input is scaled using the scaling constant.
+    - The kPercentPerSecondRamp is how much the percent input of the joysticks can change in one second.
 
     CURRENT BUGS:
     1) Sometimes, the Drive Mode number does not get put to Shuffleboard for some reason. If it doesn't, redeploy the code until
       it does.
     2) When in arcade drive, the robot's motors instantly flip the sign of their velocity if the sign of the power input changes
-    (left joystick Y). This is to ensure the robot behaves like a car would when driving backwards and steering using arcade
-    drive. I've tried to make a ramp so the motors don't change speed so quickly, but it doesn't work and its call in the
-    Drivetrain.driveArcade method has been commented out for now.
+      (left joystick Y). This is to ensure the robot behaves like a car would when driving backwards and steering using arcade
+      drive. I've tried to make a ramp so the motors don't change speed so quickly, but it doesn't work and its call in the
+      Drivetrain.driveArcade method has been commented out for now.
     */
 
     m_Drivetrain.driveModeCheck();
