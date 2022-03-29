@@ -13,7 +13,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 /** Add your docs here. */
 public class Drivetrain {
 
-    private static Drivetrain m_Drivetrain = new Drivetrain();
+    // private static Drivetrain m_Drivetrain = new Drivetrain();
     private Controller m_Controller;
     private VictorSP leftFrontMotor;
     private VictorSP leftBackMotor;
@@ -23,12 +23,9 @@ public class Drivetrain {
     private MotorControllerGroup rightMotorGroup;
     private DifferentialDrive robotDrive;
 
-    // Method of driving. 0 = tank drive, 1 = arcade drive
-    private int driveMode;
+    private String driveMode;
 
-    private double previousPower;
-    private int rampIterationsLeft;
-    private int rampIterationsToUse;
+    private double maxPercentTurboOff;
     private SlewRateLimiter rateLimiter1;
     private SlewRateLimiter rateLimiter2;
 
@@ -44,21 +41,36 @@ public class Drivetrain {
 
         leftMotorGroup.setInverted(true);
 
-        m_Controller = Controller.getInstance();
+        this.driveMode = Constants.d_a;
 
-        // Method of driving. 0 = tank drive, 1 = arcade drive
-        this.driveMode = 0;
-        SmartDashboard.putNumber(Constants.kDriveModeNameSB, this.driveMode);
-
-        rateLimiter1 = new SlewRateLimiter(Constants.kPercentPerSecondRamp);
-        rateLimiter2 = new SlewRateLimiter(Constants.kPercentPerSecondRamp);
+        this.maxPercentTurboOff = 0;
+        this.rateLimiter1 = new SlewRateLimiter(8.0);
+        this.rateLimiter2 = new SlewRateLimiter(8.0);
     }
 
-    public void driveModeCheck() {
-      this.driveMode = (int) SmartDashboard.getNumber(Constants.kDriveModeNameSB, 0);
+    public String getDriveMode() {
+      return this.driveMode;
+    }
+
+    public void setDriveMode(String newDriveMode) {
+      // stop motors on drive mode change
+      this.driveTank(0, 0);
+      this.driveMode = newDriveMode;
+    }
+
+    public double getMaxOutputTurboOff() {
+      return this.maxPercentTurboOff;
+    }
+
+    public void setMaxOutputTurboOff(double newOutput) {
+      this.maxPercentTurboOff = newOutput;
     }
     
-    public int getDriveMode() { return this.driveMode; }
+    public void setRamp(double newRamp) {
+      this.rateLimiter1 = new SlewRateLimiter(newRamp);
+      this.rateLimiter2 = new SlewRateLimiter(newRamp);
+      System.out.println("New ramp: " + newRamp + " ############################");
+    }
 
     /**
    * Scales the input from the controller/joystick based on the equation being used and the scaling constant selected
@@ -83,7 +95,7 @@ public class Drivetrain {
       // double output = Math.pow(input, 1 / Constants.kScalingConstant);
 
       // for Shuffleboard testing
-      double output = Math.pow(input, 1 / Constants.kScalingConstants[m_Controller.getScalingConstantIndex()]);
+      double output = Math.pow(input, 1 / m_Controller.getScalingConstant());
 
       return output;
     }
@@ -92,19 +104,18 @@ public class Drivetrain {
     // double output = -Math.pow(input * -1, 1 / Constants.kScalingConstant);
 
     // for Shuffleboard testing
-    double output = -Math.pow(input * -1, 1 / Constants.kScalingConstants[m_Controller.getScalingConstantIndex()]);
+    double output = -Math.pow(input * -1, 1 / m_Controller.getScalingConstant());
 
     return output;
   }
 
   private double scaleForTurbo(double power)
   {
-    SmartDashboard.putBoolean("LeftTrigger", m_Controller.getLeftStickTrigger());
-    if ((m_Controller.getControllerType() == 0 && m_Controller.getLeftStickTrigger()) || 
-        (m_Controller.getControllerType() == 1) && m_Controller.getXboxLeftBumper()) {
+    if (((m_Controller.getControllerType() == 0) && m_Controller.getLeftStickTrigger()) || 
+        ((m_Controller.getControllerType() == 1) && m_Controller.getXboxLeftBumper())) {
       return power;
     }
-    return power * Constants.kMaxPercentWithoutTurbo;
+    return power * this.maxPercentTurboOff;
   }
 
   /**
@@ -115,14 +126,16 @@ public class Drivetrain {
    */
   public void driveTank(double leftY, double rightY)
   {
+    leftY = this.scaleInput(leftY);
+    rightY = this.scaleInput(rightY);
     leftY = this.scaleForTurbo(leftY);
     rightY = this.scaleForTurbo(rightY);
 
-    if (Math.abs(leftY) < Constants.kDeadbandValue) { leftY = 0.0;}
-    if (Math.abs(rightY) < Constants.kDeadbandValue) { rightY = 0.0;}
+    if (Math.abs(leftY) < m_Controller.getDeadband()) { leftY = 0.0;}
+    if (Math.abs(rightY) < m_Controller.getDeadband()) { rightY = 0.0;}
 
-    SmartDashboard.putNumber("leftStickScaled", scaleInput(leftY));
-    SmartDashboard.putNumber("rightStickScaled", scaleInput(rightY));
+    SmartDashboard.putNumber("leftStickScaled", leftY);
+    SmartDashboard.putNumber("rightStickScaled", rightY);
 
     robotDrive.tankDrive(scaleInput(this.rateLimiter1.calculate(leftY)), scaleInput(this.rateLimiter2.calculate(rightY)));
   }
@@ -135,18 +148,32 @@ public class Drivetrain {
    */
   public void driveArcade(double powerY, double steerX)
   {
+    powerY = this.scaleInput(powerY);
+    steerX = this.scaleInput(steerX);
     powerY = this.scaleForTurbo(powerY);
 
-    if (Math.abs(powerY) < Constants.kDeadbandValue) { powerY = 0.0;}
-    if (Math.abs(steerX) < Constants.kDeadbandValue) { steerX = 0.0;}
+    if (Math.abs(powerY) < m_Controller.getDeadband()) { powerY = 0.0;}
+    if (Math.abs(steerX) < m_Controller.getDeadband()) { steerX = 0.0;}
     if (powerY < 0) { steerX *= -1; }
 
-    SmartDashboard.putNumber("leftStickScaled", scaleInput(powerY));
-    SmartDashboard.putNumber("rightStickScaled", scaleInput(steerX));
+    SmartDashboard.putNumber("leftStickScaled", powerY);
+    SmartDashboard.putNumber("rightStickScaled", steerX);
 
     robotDrive.arcadeDrive(scaleInput(this.rateLimiter1.calculate(powerY)), scaleInput(this.rateLimiter2.calculate(steerX)));
   }
 
-  public static Drivetrain getInstance() { return m_Drivetrain; }
+  /*
+  public static Drivetrain getInstance() {
+    return m_Drivetrain;
+  }
+  */
+
+  public void setControllerReference(Controller controller) {
+    this.m_Controller = controller;
+  }
+
+  public void testPrint() {
+    System.out.println("Drivetrain print test ############################");
+  }
 
 }

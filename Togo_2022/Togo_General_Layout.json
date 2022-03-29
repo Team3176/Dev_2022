@@ -503,7 +503,7 @@
       }
     },
     {
-      "title": "Tab 3",
+      "title": "Togo Settings",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -513,28 +513,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "3,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Controller Type",
-              "_title": "/SmartDashboard/Controller Type"
-            }
-          },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Mode",
-              "_title": "/SmartDashboard/Drive Mode"
-            }
-          },
           "3,2": {
             "size": [
               2,
@@ -557,19 +535,6 @@
               "_title": "/LiveWindow/Ungrouped/DifferentialDrive[1]/Right Motor Speed"
             }
           },
-          "5,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/LeftTrigger",
-              "_title": "/SmartDashboard/LeftTrigger",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
           "3,1": {
             "size": [
               2,
@@ -590,6 +555,74 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/rightStickScaled",
               "_title": "/SmartDashboard/rightStickScaled"
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Drive Mode",
+              "_title": "SmartDashboard/Drive Mode"
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Deadband",
+              "_title": "SmartDashboard/Deadband"
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Non-Turbo Boundary",
+              "_title": "SmartDashboard/Non-Turbo Boundary"
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Control Choice",
+              "_title": "SmartDashboard/Control Choice"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Turbo Mode",
+              "_title": "SmartDashboard/Turbo Mode",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Scale Value",
+              "_title": "SmartDashboard/Scale Value"
             }
           }
         }
