@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+// import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -15,11 +17,11 @@ public class Drivetrain {
 
     // private static Drivetrain m_Drivetrain = new Drivetrain();
     private Controller m_Controller;
-    private VictorSP leftFrontMotor;
-    private VictorSP leftBackMotor;
+    private CANSparkMax leftFrontMotor;
+    private CANSparkMax leftBackMotor;
     private MotorControllerGroup leftMotorGroup;
-    private VictorSP rightFrontMotor;
-    private VictorSP rightBackMotor;
+    private CANSparkMax rightFrontMotor;
+    private CANSparkMax rightBackMotor;
     private MotorControllerGroup rightMotorGroup;
     private DifferentialDrive robotDrive;
 
@@ -31,11 +33,11 @@ public class Drivetrain {
 
     public Drivetrain()
     {
-        leftFrontMotor = new VictorSP(Constants.VICTOR_LEFT_FRONT_PWM_CH);
-        leftBackMotor = new VictorSP(Constants.VICTOR_LEFT_BACK_PWM_CH);
+        leftFrontMotor = new CANSparkMax(Constants.NEO_LEFT_FRONT_CANID, MotorType.kBrushless);
+        leftBackMotor = new CANSparkMax(Constants.NEO_LEFT_BACK_CANID, MotorType.kBrushless);
         leftMotorGroup = new MotorControllerGroup(leftFrontMotor, leftBackMotor);
-        rightFrontMotor = new VictorSP(Constants.VICTOR_RIGHT_FRONT_PWM_CH);
-        rightBackMotor = new VictorSP(Constants.VICTOR_RIGHT_BACK_PWM_CH);
+        rightFrontMotor = new CANSparkMax(Constants.NEO_RIGHT_FRONT_CANID, MotorType.kBrushless);
+        rightBackMotor = new CANSparkMax(Constants.NEO_RIGHT_BACK_CANID, MotorType.kBrushless);
         rightMotorGroup = new MotorControllerGroup(rightFrontMotor, rightBackMotor);
         robotDrive = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
@@ -170,10 +172,6 @@ public class Drivetrain {
 
   public void setControllerReference(Controller controller) {
     this.m_Controller = controller;
-  }
-
-  public void testPrint() {
-    System.out.println("Drivetrain print test ############################");
   }
 
 }

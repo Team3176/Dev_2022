@@ -6,10 +6,11 @@ package frc.robot;
 
 public class Constants {
 
-  public static final int VICTOR_LEFT_FRONT_PWM_CH = 0;
-  public static final int VICTOR_LEFT_BACK_PWM_CH = 1;
-  public static final int VICTOR_RIGHT_FRONT_PWM_CH = 2;
-  public static final int VICTOR_RIGHT_BACK_PWM_CH = 3;
+  // TODO: Find these!
+  public static final int NEO_LEFT_FRONT_CANID = 11;
+  public static final int NEO_LEFT_BACK_CANID = 41;
+  public static final int NEO_RIGHT_FRONT_CANID = 31;
+  public static final int NEO_RIGHT_BACK_CANID = 21;
 
   public static final int XBOX_CONTROLLER_PORT = 2;
   public static final int JOYSTICK_LEFT_PORT = 0;
