@@ -130,7 +130,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("leftStickScaled", leftY);
     SmartDashboard.putNumber("rightStickScaled", rightY);
 
-    robotDrive.tankDrive(this.rateLimiter1.calculate(leftY), this.rateLimiter2.calculate(rightY));
+    robotDrive.tankDrive(this.rateLimiter1.calculate(leftY), this.rateLimiter2.calculate(rightY), false);
   }
 
   /**
@@ -152,7 +152,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("leftStickScaled", powerY);
     SmartDashboard.putNumber("rightStickScaled", steerX);
 
-    robotDrive.arcadeDrive(this.rateLimiter1.calculate(powerY), this.rateLimiter2.calculate(steerX));
+    robotDrive.arcadeDrive(this.rateLimiter1.calculate(powerY), this.rateLimiter2.calculate(steerX), false);
   }
 
   /*

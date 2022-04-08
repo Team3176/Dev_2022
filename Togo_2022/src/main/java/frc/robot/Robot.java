@@ -34,9 +34,11 @@ public class Robot extends TimedRobot {
     // Add controller preset indeces as doubles here -- reference the index of the preset values set and then the index 0 OF THAT
     // LIST to add the reference index as the option
     controlChoiceChooser.addOption("Joystick General", Constants.controllerChoices[0][0]);
-    controlChoiceChooser.addOption("Xbox General", Constants.controllerChoices[1][0]);
     controlChoiceChooser.setDefaultOption("Joystick Scaled Up (L2 & R4)", Constants.controllerChoices[2][0]);
+    controlChoiceChooser.addOption("Joystick Hyper (L2 & R4)", Constants.controllerChoices[4][0]);
+    controlChoiceChooser.addOption("Xbox General", Constants.controllerChoices[1][0]);
     controlChoiceChooser.addOption("Xbox X3", Constants.controllerChoices[3][0]);
+    controlChoiceChooser.addOption("Xbox X3 Hyper", Constants.controllerChoices[5][0]);
 
 
     SmartDashboard.putData("Control Choice", controlChoiceChooser);
