@@ -6,7 +6,6 @@ package frc.robot;
 
 public class Constants {
 
-  // TODO: Find these!
   public static final int NEO_LEFT_FRONT_CANID = 11;
   public static final int NEO_LEFT_BACK_CANID = 41;
   public static final int NEO_RIGHT_FRONT_CANID = 31;

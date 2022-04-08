@@ -94,20 +94,11 @@ public class Drivetrain {
     // positive input and then flip it at the end
     // Recommended: 0.25 <= a <= 5 ... Valid: a > 0
     if (input >= 0) {
-      // double output = Math.pow(input, 1 / Constants.kScalingConstant);
-
-      // for Shuffleboard testing
       double output = Math.pow(input, 1 / m_Controller.getScalingConstant());
-
       return output;
     }
-
     // if negative
-    // double output = -Math.pow(input * -1, 1 / Constants.kScalingConstant);
-
-    // for Shuffleboard testing
     double output = -Math.pow(input * -1, 1 / m_Controller.getScalingConstant());
-
     return output;
   }
 
@@ -139,7 +130,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("leftStickScaled", leftY);
     SmartDashboard.putNumber("rightStickScaled", rightY);
 
-    robotDrive.tankDrive(scaleInput(this.rateLimiter1.calculate(leftY)), scaleInput(this.rateLimiter2.calculate(rightY)));
+    robotDrive.tankDrive(this.rateLimiter1.calculate(leftY), this.rateLimiter2.calculate(rightY));
   }
 
   /**
@@ -161,7 +152,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("leftStickScaled", powerY);
     SmartDashboard.putNumber("rightStickScaled", steerX);
 
-    robotDrive.arcadeDrive(scaleInput(this.rateLimiter1.calculate(powerY)), scaleInput(this.rateLimiter2.calculate(steerX)));
+    robotDrive.arcadeDrive(this.rateLimiter1.calculate(powerY), this.rateLimiter2.calculate(steerX));
   }
 
   /*
